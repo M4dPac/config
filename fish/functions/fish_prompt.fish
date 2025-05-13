@@ -15,6 +15,15 @@ function fish_prompt
         set stat (set_color red)"[$last_status]"(set_color normal)
     end
 
+    # Цвет для venv (можно изменить)
+    set -l venv_color (set_color --bold cyan)
+
+    # Если venv активирован, добавляем его имя в prompt
+    set -l venv_prompt
+    if set -q VIRTUAL_ENV
+        set venv_prompt "$venv_color("(basename "$VIRTUAL_ENV")")$normal "
+    end
+
     # Определяем символ промпта
     set -l prompt_symbol "㉿"
     set -l prompt_end "$blue\$$reset"
@@ -30,7 +39,7 @@ function fish_prompt
     # Тип промпта (можно переключать через переменную)
     switch twoline # Или "oneline", "backtrack"
         case twoline
-            echo -ne "$green┌──$debian_chroot$venv($blue$bold$USER$prompt_symbol$hostname$green)-[$reset$bold$(prompt_pwd)$green]\n$green   └─$stat$prompt_end "
+            echo -ne "$green┌──$debian_chroot$venv($blue$bold$USER$prompt_symbol$hostname$green)-[$reset$bold$(prompt_pwd)$green]$reset$venv_prompt\n$green   └─$stat$prompt_end "
         case oneline
             echo -ne "$red$bold$user@$blue%m$reset:$green$bold$(prompt_pwd)$reset# "
         case backtrack
