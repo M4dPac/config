@@ -16,33 +16,26 @@ function fish_prompt
     end
 
     # Цвет для venv (можно изменить)
-    set -l venv_color (set_color --bold cyan)
+    # set -l venv_color (set_color --bold cyan)
 
     # Если venv активирован, добавляем его имя в prompt
     set -l venv_prompt
     if set -q VIRTUAL_ENV
-        set venv_prompt "$venv_color("(basename "$VIRTUAL_ENV")")$normal "
+        set venv_prompt "$green-("(path basename "$VIRTUAL_ENV")")$reset"
     end
 
     # Определяем символ промпта
-    set -l prompt_symbol "㉿"
+    set -l prompt_symbol "󰮯"
     set -l prompt_end "$blue\$$reset"
     if [ (id -u) = 0 ]
         set prompt_symbol "💀" # Заменить на череп для root
         set prompt_end "$red#$reset"
     end
 
-    # Дополнительные элементы
-    set -l debian_chroot (if test -n "$debian_chroot"; then echo "($debian_chroot)"; end)
-    set -l venv (if test -n "$VIRTUAL_ENV"; then echo "(basename $VIRTUAL_ENV)"; end)
 
-    # Тип промпта (можно переключать через переменную)
-    switch twoline # Или "oneline", "backtrack"
-        case twoline
-            echo -ne "$green┌──$debian_chroot$venv($blue$bold$USER$prompt_symbol$hostname$green)-[$reset$bold$(prompt_pwd)$green]$reset$venv_prompt\n$green   └─$stat$prompt_end "
-        case oneline
-            echo -ne "$red$bold$user@$blue%m$reset:$green$bold$(prompt_pwd)$reset# "
-        case backtrack
-            echo -ne "$red$bold$user@$blue%m$reset:$green$bold$(prompt_pwd)$reset# "
-    end
+    echo -ne "$green┌──"
+    echo -ne "($blue$bold$USER$prompt_symbol$hostname$green)"
+    echo -ne "-[$reset$bold$(prompt_pwd)$green]$reset"
+    echo -ne "$venv_prompt\n"
+    echo -ne "$green   └─$stat$prompt_end "
 end
